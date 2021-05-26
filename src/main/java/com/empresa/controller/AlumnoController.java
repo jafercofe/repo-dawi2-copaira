@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,19 @@ public class AlumnoController {
 		System.out.println(">>> lista <<<");
 		List<Alumno> lstAlumno = service.listaAlumno();
 		return ResponseEntity.ok(lstAlumno);
+	}
+	
+	@GetMapping(value = "/buscarPorDNI/{dni}")
+	public ResponseEntity<List<Alumno>> buscar(@PathVariable("dni") String dni) {
+		System.out.println(">>>> busca por dni : " + dni);
+		List<Alumno> lstAlumno = service.listaPorDni(dni);
+		if (CollectionUtils.isEmpty(lstAlumno)) {
+			service.listaPorDni(dni);
+			return ResponseEntity.ok(lstAlumno);
+		} else {
+			System.out.println(">>>> buscar por dni - no existen alumnos con ese dni : " + dni);
+			return ResponseEntity.badRequest().build();
+		}
 	}
 	
 	@PostMapping
